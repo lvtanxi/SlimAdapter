@@ -9,9 +9,9 @@ open class BaseType (open val layout: Int, open val variable: Int? = null)
 abstract class AbsType<B : ViewDataBinding> (layout: Int, variable: Int? = null) : BaseType(layout, variable)
 
 open class ItemType<B : ViewDataBinding> (layout: Int, variable: Int? = null) : AbsType<B>(layout, variable) {
-    open fun onCreate(holder: Holder<B>) {}
-    open fun onBind(holder: Holder<B>) {}
-    open fun onRecycle(holder: Holder<B>) {}
+    open fun onCreate(slimHolder: SlimHolder<B>) {}
+    open fun onBind(slimHolder: SlimHolder<B>) {}
+    open fun onRecycle(slimHolder: SlimHolder<B>) {}
 }
 
 open class Type<B : ViewDataBinding> (layout: Int, variable: Int? = null) : AbsType<B>(layout, variable) {
@@ -27,4 +27,4 @@ open class Type<B : ViewDataBinding> (layout: Int, variable: Int? = null) : AbsT
     fun onRecycle(action: Action<B>?) = apply { onRecycle = action }
 }
 
-typealias Action<B> = (Holder<B>) -> Unit
+typealias Action<B> = (SlimHolder<B>) -> Unit

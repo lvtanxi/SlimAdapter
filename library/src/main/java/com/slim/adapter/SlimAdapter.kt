@@ -10,12 +10,12 @@ import android.view.ViewGroup
 /**
  * 适配
  */
-class LastAdapter(private val list: List<Any>,
+class SlimAdapter(private val list: List<Any>,
                   private val variable: Int? = null,
-                  stableIds: Boolean = false) : RecyclerView.Adapter<Holder<ViewDataBinding>>() {
+                  stableIds: Boolean = false) : RecyclerView.Adapter<SlimHolder<ViewDataBinding>>() {
 
     private val invalidation = Any()
-    private val callback = ObservableListCallback(this)
+    private val callback = SlimObservableCallback(this)
     private var recyclerView: RecyclerView? = null
     private lateinit var inflater: LayoutInflater
 
@@ -59,12 +59,12 @@ class LastAdapter(private val list: List<Any>,
         override fun getItemType(item: Any, position: Int) = f(item, position)
     })
 
-    fun into(recyclerView: RecyclerView) = apply { recyclerView.adapter = this }
+    fun into(recyclerView: RecyclerView?) = apply { recyclerView?.adapter = this }
 
 
-    override fun onCreateViewHolder(view: ViewGroup, viewType: Int): Holder<ViewDataBinding> {
+    override fun onCreateViewHolder(view: ViewGroup, viewType: Int): SlimHolder<ViewDataBinding> {
         val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, viewType, view, false)
-        val holder = Holder(binding)
+        val holder = SlimHolder(binding)
         binding.addOnRebindCallback(object : OnRebindCallback<ViewDataBinding>() {
             override fun onPreBind(binding: ViewDataBinding) = recyclerView?.isComputingLayout ?: false
             override fun onCanceled(binding: ViewDataBinding) {
@@ -80,34 +80,34 @@ class LastAdapter(private val list: List<Any>,
         return holder
     }
 
-    override fun onBindViewHolder(holder: Holder<ViewDataBinding>, position: Int) {
+    override fun onBindViewHolder(slimHolder: SlimHolder<ViewDataBinding>, position: Int) {
         val type = getType(position)!!
-        holder.binding.setVariable(getVariable(type), list[position])
-        holder.binding.executePendingBindings()
+        slimHolder.binding.setVariable(getVariable(type), list[position])
+        slimHolder.binding.executePendingBindings()
         @Suppress("UNCHECKED_CAST")
         if (type is AbsType<*>) {
-            if (!holder.created) {
-                notifyCreate(holder, type as AbsType<ViewDataBinding>)
+            if (!slimHolder.created) {
+                notifyCreate(slimHolder, type as AbsType<ViewDataBinding>)
             }
-            notifyBind(holder, type as AbsType<ViewDataBinding>)
+            notifyBind(slimHolder, type as AbsType<ViewDataBinding>)
         }
     }
 
-    override fun onBindViewHolder(holder: Holder<ViewDataBinding>, position: Int, payloads: List<Any>) {
+    override fun onBindViewHolder(slimHolder: SlimHolder<ViewDataBinding>, position: Int, payloads: List<Any>) {
         if (isForDataBinding(payloads)) {
-            holder.binding.executePendingBindings()
+            slimHolder.binding.executePendingBindings()
         } else {
-            super.onBindViewHolder(holder, position, payloads)
+            super.onBindViewHolder(slimHolder, position, payloads)
         }
     }
 
-    override fun onViewRecycled(holder: Holder<ViewDataBinding>) {
-        val position = holder.adapterPosition
+    override fun onViewRecycled(slimHolder: SlimHolder<ViewDataBinding>) {
+        val position = slimHolder.adapterPosition
         if (position != RecyclerView.NO_POSITION && position < list.size) {
             val type = getType(position)!!
             if (type is AbsType<*>) {
                 @Suppress("UNCHECKED_CAST")
-                notifyRecycle(holder, type as AbsType<ViewDataBinding>)
+                notifyRecycle(slimHolder, type as AbsType<ViewDataBinding>)
             }
         }
     }
@@ -166,43 +166,43 @@ class LastAdapter(private val list: List<Any>,
         return true
     }
 
-    private fun notifyCreate(holder: Holder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
+    private fun notifyCreate(slimHolder: SlimHolder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
         when (type) {
             is Type -> {
-                setClickListeners(holder, type)
-                type.onCreate?.invoke(holder)
+                setClickListeners(slimHolder, type)
+                type.onCreate?.invoke(slimHolder)
             }
-            is ItemType -> type.onCreate(holder)
+            is ItemType -> type.onCreate(slimHolder)
         }
-        holder.created = true
+        slimHolder.created = true
     }
 
-    private fun notifyBind(holder: Holder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
+    private fun notifyBind(slimHolder: SlimHolder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
         when (type) {
-            is Type -> type.onBind?.invoke(holder)
-            is ItemType -> type.onBind(holder)
+            is Type -> type.onBind?.invoke(slimHolder)
+            is ItemType -> type.onBind(slimHolder)
         }
     }
 
-    private fun notifyRecycle(holder: Holder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
+    private fun notifyRecycle(slimHolder: SlimHolder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
         when (type) {
-            is Type -> type.onRecycle?.invoke(holder)
-            is ItemType -> type.onRecycle(holder)
+            is Type -> type.onRecycle?.invoke(slimHolder)
+            is ItemType -> type.onRecycle(slimHolder)
         }
     }
 
 
-    private fun setClickListeners(holder: Holder<ViewDataBinding>, type: Type<ViewDataBinding>) {
+    private fun setClickListeners(slimHolder: SlimHolder<ViewDataBinding>, type: Type<ViewDataBinding>) {
         val onClick = type.onClick
         if (onClick != null) {
-            holder.itemView.setOnClickListener {
-                onClick(holder)
+            slimHolder.itemView.setOnClickListener {
+                onClick(slimHolder)
             }
         }
         val onLongClick = type.onLongClick
         if (onLongClick != null) {
-            holder.itemView.setOnLongClickListener {
-                onLongClick(holder)
+            slimHolder.itemView.setOnLongClickListener {
+                onLongClick(slimHolder)
                 true
             }
         }
