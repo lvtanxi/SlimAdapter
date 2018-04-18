@@ -7,10 +7,11 @@ import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+
 /**
  * 适配
  */
-class SlimAdapter(private val list: List<Any>,
+open class SlimAdapter(private val list: List<Any>,
                   private val variable: Int? = null,
                   stableIds: Boolean = false) : RecyclerView.Adapter<SlimHolder<ViewDataBinding>>() {
 
@@ -31,6 +32,7 @@ class SlimAdapter(private val list: List<Any>,
 
     inline fun <reified T : Any> map(layout: Int, variable: Int? = null) = map(T::class.java, layout, variable)
 
+
     fun <T : Any> map(clazz: Class<T>, type: AbsType<*>) = apply { map[clazz] = type }
 
     inline fun <reified T : Any> map(type: AbsType<*>) = map(T::class.java, type)
@@ -43,7 +45,7 @@ class SlimAdapter(private val list: List<Any>,
         when (handler) {
             is LayoutHandler -> {
                 if (variable == null) {
-                    throw IllegalStateException("No variable specified in LastAdapter constructor")
+                    throw IllegalStateException("No variable specified in SlimAdapter constructor")
                 }
                 layoutHandler = handler
             }
@@ -82,7 +84,7 @@ class SlimAdapter(private val list: List<Any>,
 
     override fun onBindViewHolder(slimHolder: SlimHolder<ViewDataBinding>, position: Int) {
         val type = getType(position)!!
-        slimHolder.binding.setVariable(getVariable(type), list[position])
+        slimHolder.binding.setVariable(getVariable(type), getItem(position))
         slimHolder.binding.executePendingBindings()
         @Suppress("UNCHECKED_CAST")
         if (type is AbsType<*>) {
@@ -114,7 +116,7 @@ class SlimAdapter(private val list: List<Any>,
 
     override fun getItemId(position: Int): Long {
         return if (hasStableIds()) {
-            val item = list[position]
+            val item = getItem(position)
             if (item is StableId) {
                 item.stableId
             } else {
@@ -124,6 +126,8 @@ class SlimAdapter(private val list: List<Any>,
             super.getItemId(position)
         }
     }
+
+   open fun getItem(position: Int) = list[position]
 
     override fun getItemCount() = list.size
 
@@ -142,13 +146,13 @@ class SlimAdapter(private val list: List<Any>,
         recyclerView = null
     }
 
-    override fun getItemViewType(position: Int) = layoutHandler?.getItemLayout(list[position], position)
-            ?: typeHandler?.getItemType(list[position], position)?.layout
+    override fun getItemViewType(position: Int) = layoutHandler?.getItemLayout(getItem(position), position)
+            ?: typeHandler?.getItemType(getItem(position), position)?.layout
             ?: getType(position)?.layout
-            ?: throw RuntimeException("Invalid object at position $position: ${list[position].javaClass}")
+            ?: throw RuntimeException("Invalid object at position $position: ${getItem(position).javaClass}")
 
-    private fun getType(position: Int) = typeHandler?.getItemType(list[position], position)
-            ?: map[list[position].javaClass]
+    private fun getType(position: Int) = typeHandler?.getItemType(getItem(position), position)
+            ?: map[getItem(position).javaClass]
 
     private fun getVariable(type: BaseType) = type.variable
             ?: variable

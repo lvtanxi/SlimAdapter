@@ -1,4 +1,3 @@
-
 package com.slim.adapter
 
 
@@ -26,4 +25,10 @@ interface LayoutHandler : Handler {
  */
 interface StableId {
     val stableId: Long
+}
+
+interface Section {
+    fun childCount(): Int
+
+    fun childItem(position: Int): Any
 }

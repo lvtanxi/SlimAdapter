@@ -48,7 +48,7 @@ uploadArchives{
         repository(url: "http://10.13.3.10:8081/nexus/content/repositories/releases/") {
             authentication(userName: "deployment", password: "deployment123")
         }
-        pom.version = "1.0.0"
+        pom.version = "1.0.5"
         pom.artifactId = "SlimAdapter"
         pom.groupId = "com.wumart.lib"
         pom.name = "SlimAdapter"

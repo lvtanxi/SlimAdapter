@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference
 /**
  * 监听数据变化
  */
-class ObservableListCallback<H : RecyclerView.ViewHolder>(adapter: RecyclerView.Adapter<H>)
+class SlimObservableCallback<H : RecyclerView.ViewHolder>(adapter: RecyclerView.Adapter<H>)
     : ObservableList.OnListChangedCallback<ObservableList<Any>>() {
 
     private val reference = WeakReference<RecyclerView.Adapter<H>>(adapter)
