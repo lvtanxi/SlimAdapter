@@ -1,0 +1,23 @@
+
+
+    <!--android:onClick="@{v -> item.onItemClick(v)}"
+        android:onLongClick="@{v -> item.onItemLongClick(v)}"-->
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/pointX"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='d'/>
+        <TextView
+            android:id="@+id/pointY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+

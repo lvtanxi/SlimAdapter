@@ -3,4 +3,28 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="TOAST_COLOR">#88000000</color>
+    <color name="COLOR_BORDER_LINE">#d7d7d7</color>
+    <color name="WINDOW_BACKGROUND">#F8F8F8</color>
+    <color name="not_select">#f6f8fa</color>
+    <color name="alertdialog_line">#c6c6c6</color>
+    <color name="actionsheet_blue">#037BFF</color>
+    <color name="actionsheet_red">#FD4A2E</color>
+    <color name="actionsheet_gray">#8F8F8F</color>
+    <color name="black">#222222</color>
+    <color name="trans">#00000000</color>
+    <color name="dividerColor">#e5e5e5</color>
+    <color name="not_enabled">#e0e1e3</color>
+    <color name="blue">#03a9f4</color>
+    <color name="gray">#666666</color>
+    <color name="red">#ff0000</color>
+    <color name="divider_line">#bdbdbd</color>
+
+    <color name="gradient_end">#007afd</color>
+    <color name="gradient_start">#3aaefe</color>
+    <color name="gradient_center">#3792EF</color>
+
+    <color name="textColorSecondary">#676767</color>
+    <color name="textColorTertiary">#222222</color>
+    <color name="tab_red">#ff4451</color>
 </resources>

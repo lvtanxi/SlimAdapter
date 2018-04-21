@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smartrefresh.layout.SmartRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/smart_refresh_layout"
+    style="@style/MatchMatch"
+    app:srlAccentColor="@android:color/white"
+    app:srlEnablePreviewInEditMode="true">
+
+    <include layout="@layout/widget_recycler_view"/>
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>

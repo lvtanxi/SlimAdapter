@@ -1,0 +1,39 @@
+
+    <!--android:onClick="@{v -> item.onItemClick(v)}"
+        android:onLongClick="@{v -> item.onItemLongClick(v)}"-->
+    <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@null"/>
+
+        <TextView
+            android:id="@+id/serialNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/image"
+            android:layout_toRightOf="@id/image"
+            android:text='id'/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/serialNumber"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/image"
+            android:layout_toRightOf="@id/image"
+            android:text='中国'/>
+
+    </RelativeLayout>
+

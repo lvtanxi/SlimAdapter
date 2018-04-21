@@ -1,9 +1,5 @@
 package com.slim.adapter
 
-import android.databinding.DataBindingUtil
-import android.databinding.ObservableList
-import android.databinding.OnRebindCallback
-import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,12 +7,8 @@ import android.view.ViewGroup
 /**
  * 适配
  */
-open class SlimAdapter(private val list: List<Any>,
-                  private val variable: Int? = null,
-                  stableIds: Boolean = false) : RecyclerView.Adapter<SlimHolder<ViewDataBinding>>() {
-
-    private val invalidation = Any()
-    private val callback = SlimObservableCallback(this)
+open class SlimAdapter : RecyclerView.Adapter<SlimHolder>() {
+    protected val list = ArrayList<Any>()
     private var recyclerView: RecyclerView? = null
     private lateinit var inflater: LayoutInflater
 
@@ -24,29 +16,21 @@ open class SlimAdapter(private val list: List<Any>,
     private var layoutHandler: LayoutHandler? = null
     private var typeHandler: TypeHandler? = null
 
-    init {
-        setHasStableIds(stableIds)
-    }
 
-    fun <T : Any> map(clazz: Class<T>, layout: Int, variable: Int? = null) = apply { map[clazz] = BaseType(layout, variable) }
+    fun <T : Any> map(clazz: Class<T>, layout: Int) = apply { map[clazz] = BaseType(layout) }
 
-    inline fun <reified T : Any> map(layout: Int, variable: Int? = null) = map(T::class.java, layout, variable)
+    inline fun <reified T : Any> map(layout: Int) = map(T::class.java, layout)
 
 
-    fun <T : Any> map(clazz: Class<T>, type: AbsType<*>) = apply { map[clazz] = type }
+    fun <T : Any> map(clazz: Class<T>, type: AbsType<T>) = apply { map[clazz] = type }
 
-    inline fun <reified T : Any> map(type: AbsType<*>) = map(T::class.java, type)
+    inline fun <reified T : Any> map(type: AbsType<T>) = map(T::class.java, type)
 
-    inline fun <reified T : Any, B : ViewDataBinding> map(layout: Int,
-                                                          variable: Int? = null,
-                                                          noinline f: (Type<B>.() -> Unit)? = null) = map(T::class.java, Type<B>(layout, variable).apply { f?.invoke(this) })
+    inline fun <reified T : Any> map(layout: Int, noinline f: (Type<T>.() -> Unit)? = null) = map(T::class.java, Type<T>(layout).apply { f?.invoke(this) })
 
     fun handler(handler: Handler) = apply {
         when (handler) {
             is LayoutHandler -> {
-                if (variable == null) {
-                    throw IllegalStateException("No variable specified in SlimAdapter constructor")
-                }
                 layoutHandler = handler
             }
             is TypeHandler -> typeHandler = handler
@@ -57,59 +41,36 @@ open class SlimAdapter(private val list: List<Any>,
         override fun getItemLayout(item: Any, position: Int) = f(item, position)
     })
 
-    inline fun type(crossinline f: (Any, Int) -> AbsType<*>?) = handler(object : TypeHandler {
+    inline fun type(crossinline f: (Any, Int) -> AbsType<Any>) = handler(object : TypeHandler {
         override fun getItemType(item: Any, position: Int) = f(item, position)
     })
 
     fun into(recyclerView: RecyclerView?) = apply { recyclerView?.adapter = this }
 
 
-    override fun onCreateViewHolder(view: ViewGroup, viewType: Int): SlimHolder<ViewDataBinding> {
-        val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater, viewType, view, false)
-        val holder = SlimHolder(binding)
-        binding.addOnRebindCallback(object : OnRebindCallback<ViewDataBinding>() {
-            override fun onPreBind(binding: ViewDataBinding) = recyclerView?.isComputingLayout ?: false
-            override fun onCanceled(binding: ViewDataBinding) {
-                if (recyclerView?.isComputingLayout != false) {
-                    return
-                }
-                val position = holder.adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    notifyItemChanged(position, invalidation)
-                }
-            }
-        })
-        return holder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlimHolder {
+        val itemView = inflater.inflate(viewType, parent, false)
+        return SlimHolder(itemView)
     }
 
-    override fun onBindViewHolder(slimHolder: SlimHolder<ViewDataBinding>, position: Int) {
+    override fun onBindViewHolder(slimHolder: SlimHolder, position: Int) {
         val type = getType(position)!!
-        slimHolder.binding.setVariable(getVariable(type), getItem(position))
-        slimHolder.binding.executePendingBindings()
-        @Suppress("UNCHECKED_CAST")
         if (type is AbsType<*>) {
+            slimHolder.data = getItem(position)
             if (!slimHolder.created) {
-                notifyCreate(slimHolder, type as AbsType<ViewDataBinding>)
+                notifyCreate(slimHolder, type)
             }
-            notifyBind(slimHolder, type as AbsType<ViewDataBinding>)
+            notifyBind(slimHolder, type)
         }
     }
 
-    override fun onBindViewHolder(slimHolder: SlimHolder<ViewDataBinding>, position: Int, payloads: List<Any>) {
-        if (isForDataBinding(payloads)) {
-            slimHolder.binding.executePendingBindings()
-        } else {
-            super.onBindViewHolder(slimHolder, position, payloads)
-        }
-    }
 
-    override fun onViewRecycled(slimHolder: SlimHolder<ViewDataBinding>) {
+    override fun onViewRecycled(slimHolder: SlimHolder) {
         val position = slimHolder.adapterPosition
         if (position != RecyclerView.NO_POSITION && position < list.size) {
             val type = getType(position)!!
             if (type is AbsType<*>) {
-                @Suppress("UNCHECKED_CAST")
-                notifyRecycle(slimHolder, type as AbsType<ViewDataBinding>)
+                notifyRecycle(slimHolder, type)
             }
         }
     }
@@ -127,22 +88,16 @@ open class SlimAdapter(private val list: List<Any>,
         }
     }
 
-   open fun getItem(position: Int) = list[position]
+    open fun getItem(position: Int) = list[position]
 
     override fun getItemCount() = list.size
 
     override fun onAttachedToRecyclerView(rv: RecyclerView) {
-        if (recyclerView == null && list is ObservableList) {
-            list.addOnListChangedCallback(callback)
-        }
         recyclerView = rv
         inflater = LayoutInflater.from(rv.context)
     }
 
     override fun onDetachedFromRecyclerView(rv: RecyclerView) {
-        if (recyclerView != null && list is ObservableList) {
-            list.removeOnListChangedCallback(callback)
-        }
         recyclerView = null
     }
 
@@ -154,61 +109,73 @@ open class SlimAdapter(private val list: List<Any>,
     private fun getType(position: Int) = typeHandler?.getItemType(getItem(position), position)
             ?: map[getItem(position).javaClass]
 
-    private fun getVariable(type: BaseType) = type.variable
-            ?: variable
-            ?: throw IllegalStateException("No variable specified for type ${type.javaClass.simpleName}")
 
-    private fun isForDataBinding(payloads: List<Any>): Boolean {
-        if (payloads.isEmpty()) {
-            return false
-        }
-        payloads.forEach {
-            if (it != invalidation) {
-                return false
-            }
-        }
-        return true
-    }
-
-    private fun notifyCreate(slimHolder: SlimHolder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
+    private fun <T> notifyCreate(slimHolder: SlimHolder, type: AbsType<T>) {
         when (type) {
             is Type -> {
                 setClickListeners(slimHolder, type)
-                type.onCreate?.invoke(slimHolder)
+                type.onCreate?.invoke(slimHolder, obItemData(slimHolder))
             }
             is ItemType -> type.onCreate(slimHolder)
         }
         slimHolder.created = true
     }
 
-    private fun notifyBind(slimHolder: SlimHolder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
+    private fun <T> notifyBind(slimHolder: SlimHolder, type: AbsType<T>) {
         when (type) {
-            is Type -> type.onBind?.invoke(slimHolder)
+            is Type -> type.onBind?.invoke(slimHolder, obItemData(slimHolder))
             is ItemType -> type.onBind(slimHolder)
         }
     }
 
-    private fun notifyRecycle(slimHolder: SlimHolder<ViewDataBinding>, type: AbsType<ViewDataBinding>) {
+    private fun <T> obItemData(slimHolder: SlimHolder) = getItem(slimHolder.adapterPosition) as T
+
+
+    fun clearDatas() {
+        list.clear()
+        notifyDataSetChanged()
+    }
+
+    fun isEmpty(): Boolean {
+        return list.isEmpty()
+    }
+
+
+    fun isLast(position: Int): Boolean {
+        return list.lastIndex == position
+    }
+
+    fun <T> getItemModel(position: Int): T {
+        return getItem(position) as T
+    }
+
+    fun addItems(data: MutableList<Any>?, isRefresh: Boolean) {//刷新
+        if (isRefresh)
+            clearDatas()
+        addItems(data)
+    }
+
+
+    fun addItems(items: MutableList<Any>?) {
+        if (items != null && !items.isEmpty()) {
+            if (list.addAll(items))
+                notifyDataSetChanged()
+        }
+    }
+
+
+    private fun <T> notifyRecycle(slimHolder: SlimHolder, type: AbsType<T>) {
         when (type) {
-            is Type -> type.onRecycle?.invoke(slimHolder)
+            is Type -> type.onRecycle?.invoke(slimHolder, obItemData(slimHolder))
             is ItemType -> type.onRecycle(slimHolder)
         }
     }
 
 
-    private fun setClickListeners(slimHolder: SlimHolder<ViewDataBinding>, type: Type<ViewDataBinding>) {
+    private fun <T> setClickListeners(slimHolder: SlimHolder, type: Type<T>) {
         val onClick = type.onClick
         if (onClick != null) {
-            slimHolder.itemView.setOnClickListener {
-                onClick(slimHolder)
-            }
-        }
-        val onLongClick = type.onLongClick
-        if (onLongClick != null) {
-            slimHolder.itemView.setOnLongClickListener {
-                onLongClick(slimHolder)
-                true
-            }
+            slimHolder.itemView.setOnClickListener { onClick(slimHolder, obItemData(slimHolder)) }
         }
     }
 

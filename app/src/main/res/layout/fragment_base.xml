@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.lvtanxi.layout.StateLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/state_layout"
+    style="@style/MatchMatch">
+</com.lvtanxi.layout.StateLayout>

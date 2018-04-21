@@ -1,30 +1,28 @@
 package com.slim.adapter
 
-import android.databinding.ViewDataBinding
+
 /**
  * 多布局适配
  */
-open class BaseType (open val layout: Int, open val variable: Int? = null)
+open class BaseType (open val layout: Int)
 
-abstract class AbsType<B : ViewDataBinding> (layout: Int, variable: Int? = null) : BaseType(layout, variable)
+abstract class AbsType<T> (layout: Int) : BaseType(layout)
 
-open class ItemType<B : ViewDataBinding> (layout: Int, variable: Int? = null) : AbsType<B>(layout, variable) {
-    open fun onCreate(slimHolder: SlimHolder<B>) {}
-    open fun onBind(slimHolder: SlimHolder<B>) {}
-    open fun onRecycle(slimHolder: SlimHolder<B>) {}
+open class ItemType<T>(layout: Int) : AbsType<T>(layout) {
+    open fun onCreate(slimHolder: SlimHolder) {}
+    open fun onBind(slimHolder: SlimHolder) {}
+    open fun onRecycle(slimHolder: SlimHolder) {}
 }
 
-open class Type<B : ViewDataBinding> (layout: Int, variable: Int? = null) : AbsType<B>(layout, variable) {
-    internal var onCreate: Action<B>? = null; private set
-    internal var onBind: Action<B>? = null; private set
-    internal var onClick: Action<B>? = null; private set
-    internal var onLongClick: Action<B>? = null; private set
-    internal var onRecycle: Action<B>? = null; private set
-    fun onCreate(action: Action<B>?) = apply { onCreate = action }
-    fun onBind(action: Action<B>?) = apply { onBind = action }
-    fun onClick(action: Action<B>?) = apply { onClick = action }
-    fun onLongClick(action: Action<B>?) = apply { onLongClick = action }
-    fun onRecycle(action: Action<B>?) = apply { onRecycle = action }
+open class Type<T> (layout: Int) : AbsType<T>(layout) {
+    internal var onCreate: Action<T>? = null; private set
+    internal var onBind: Action<T>? = null; private set
+    internal var onClick: Action<T>? = null; private set
+    internal var onRecycle: Action<T>? = null; private set
+    fun onCreate(action: Action<T>?) = apply { onCreate = action }
+    fun onBind(action: Action<T>?) = apply { onBind = action }
+    fun onClick(action: Action<T>?) = apply { onClick = action }
+    fun onRecycle(action: Action<T>?) = apply { onRecycle = action }
 }
 
-typealias Action<B> = (SlimHolder<B>) -> Unit
+typealias Action<T> = (holder:SlimHolder,t:T) -> Unit
