@@ -7,7 +7,7 @@ package com.slim.adapter.demo.base
  * Description: 注解act 的name
  */
 @Target(AnnotationTarget.CLASS)
-annotation class Act(
+annotation class Act (
         /**
          * act的名字
          */

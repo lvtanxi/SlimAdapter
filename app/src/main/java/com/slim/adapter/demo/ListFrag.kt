@@ -1,30 +1,23 @@
 package com.slim.adapter.demo
 
-
-import android.media.Image
-import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.slim.adapter.SlimAdapter
-import com.slim.adapter.SlimConvert
 import com.slim.adapter.Type
-import com.slim.adapter.demo.base.Act
-import com.slim.adapter.demo.base.BaseRecyclerActivity
+import com.slim.adapter.demo.base.BaseRecyclerFragment
 import com.slim.adapter.demo.data.User
 import com.slim.http.core.slimHttp
 import com.slim.http.type.GET
 import kotlinx.android.synthetic.main.item_user.view.*
 
-@Act(title = "普通List")
-class ListActivity : BaseRecyclerActivity() {
-
+/**
+ * Date: 2018-04-23
+ * Time: 15:54
+ * Description:
+ */
+class ListFrag :BaseRecyclerFragment(){
     override fun bindAdapter() = SlimAdapter()
             .map(Type<User>(R.layout.item_user)
                     .onBind { holder, t ->
-                        SlimConvert(holder.itemView)
-                                .setText(R.id.serialNumber,t.name)
-                                .with<ImageView>(R.id.image,{
-                                    Glide.with(it.context).load(t.image).into(it)
-                                })
+                        holder.itemView.serialNumber.text = t.name
                     }
                     .onClick { _, t ->
                         toastSuccess(t.name)
@@ -41,5 +34,4 @@ class ListActivity : BaseRecyclerActivity() {
             }
         }.mapPageSub<MutableList<User>>(this)
     }
-
 }

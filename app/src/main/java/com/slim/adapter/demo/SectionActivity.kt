@@ -1,17 +1,16 @@
 package com.slim.adapter.demo
 
-import android.support.v7.widget.RecyclerView
-import com.slim.adapter.SlimAdapter
 import com.slim.adapter.SlimSectionAdapter
 import com.slim.adapter.Type
 import com.slim.adapter.demo.base.Act
 import com.slim.adapter.demo.base.BaseRecyclerActivity
 import com.slim.adapter.demo.data.Sd
 import com.slim.adapter.demo.data.User
+import com.slim.adapter.demo.helper.ImageConvert
+import com.slim.adapter.demo.helper.SectionDecoration
 import com.slim.http.core.slimHttp
 import com.slim.http.type.GET
 import kotlinx.android.synthetic.main.item_section.view.*
-import kotlinx.android.synthetic.main.item_user.view.*
 
 /**
  * Date: 2018-04-21
@@ -21,19 +20,28 @@ import kotlinx.android.synthetic.main.item_user.view.*
 @Act(title = "SectionList")
 class SectionActivity : BaseRecyclerActivity() {
 
+    override fun initData() {
+        super.initData()
+        recyclerView?.addItemDecoration(SectionDecoration(R.layout.item_section))
+    }
+
 
     override fun bindAdapter() = SlimSectionAdapter()
             .map(Type<Sd>(R.layout.item_section)
                     .onBind { holder, t ->
                         holder.itemView.title.text = t.title
                     }
+                    .onClick { _, t ->
+                        toastSuccess(t.title)
+                    }
             )
             .map(Type<User>(R.layout.item_user)
-                    .onBind { holder, t ->
-                        holder.itemView.serialNumber.text = t.name
+                    .onConvert { convert, t ->
+                        convert.setText(R.id.serialNumber, t.name)
+                                .with(R.id.image, ImageConvert(t.image))
                     }
-                    .onClick { holder, t ->
-                        holder.itemView.serialNumber.text = t.name
+                    .onClick { _, t ->
+                        toastSuccess(t.name)
                     }
             )
 

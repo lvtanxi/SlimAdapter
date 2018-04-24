@@ -7,6 +7,7 @@ import android.view.ViewGroup
 /**
  * 适配
  */
+@Suppress("UNCHECKED_CAST")
 open class SlimAdapter : RecyclerView.Adapter<SlimHolder>() {
     protected val list = ArrayList<Any>()
     private var recyclerView: RecyclerView? = null
@@ -111,24 +112,26 @@ open class SlimAdapter : RecyclerView.Adapter<SlimHolder>() {
 
 
     private fun <T> notifyCreate(slimHolder: SlimHolder, type: AbsType<T>) {
-        when (type) {
-            is Type -> {
-                setClickListeners(slimHolder, type)
-                type.onCreate?.invoke(slimHolder, obItemData(slimHolder))
-            }
-            is ItemType -> type.onCreate(slimHolder)
+        if (type is Type) {
+            setClickListeners(slimHolder, type)
+            invokeAction(type.onCreate, slimHolder)
         }
         slimHolder.created = true
     }
 
-    private fun <T> notifyBind(slimHolder: SlimHolder, type: AbsType<T>) {
-        when (type) {
-            is Type -> type.onBind?.invoke(slimHolder, obItemData(slimHolder))
-            is ItemType -> type.onBind(slimHolder)
-        }
+
+    private fun <T> invokeAction(action: Action<T>?, slimHolder: SlimHolder) {
+        action?.invoke(slimHolder, getItemModel(slimHolder.layoutPosition))
     }
 
-    private fun <T> obItemData(slimHolder: SlimHolder) = getItem(slimHolder.adapterPosition) as T
+    private fun <T> notifyBind(slimHolder: SlimHolder, type: AbsType<T>) {
+        if (type is Type) {
+            if (type.onBind != null)
+                invokeAction(type.onBind, slimHolder)
+            else if (type.onConvert != null)
+                type.onConvert?.invoke(SlimConvert(slimHolder.itemView), getItemModel(slimHolder.layoutPosition))
+        }
+    }
 
 
     fun clearDatas() {
@@ -165,17 +168,15 @@ open class SlimAdapter : RecyclerView.Adapter<SlimHolder>() {
 
 
     private fun <T> notifyRecycle(slimHolder: SlimHolder, type: AbsType<T>) {
-        when (type) {
-            is Type -> type.onRecycle?.invoke(slimHolder, obItemData(slimHolder))
-            is ItemType -> type.onRecycle(slimHolder)
-        }
+        if (type is Type)
+            invokeAction(type.onRecycle, slimHolder)
     }
 
 
     private fun <T> setClickListeners(slimHolder: SlimHolder, type: Type<T>) {
         val onClick = type.onClick
         if (onClick != null) {
-            slimHolder.itemView.setOnClickListener { onClick(slimHolder, obItemData(slimHolder)) }
+            slimHolder.itemView.setOnClickListener { onClick(slimHolder, getItemModel(slimHolder.layoutPosition)) }
         }
     }
 

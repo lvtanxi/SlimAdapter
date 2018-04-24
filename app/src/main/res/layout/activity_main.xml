@@ -18,5 +18,31 @@
             android:layout_height="wrap_content"
             android:text="普通section"
             android:textAllCaps="false"/>
+        <Button
+            android:id="@+id/toTab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="普通Tab"
+            android:textAllCaps="false"/>
+        <Button
+            android:id="@+id/testNet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="网络测试"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/testBaci"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="基本类型返回"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/testVoid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Void类型返回"
+            android:textAllCaps="false"/>
 
     </LinearLayout>

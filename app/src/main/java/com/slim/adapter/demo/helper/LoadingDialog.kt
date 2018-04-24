@@ -20,13 +20,13 @@ class LoadingDialog (context: Context) : Dialog(context, R.style.loading_dialog_
     }
 
     override fun show() {
-        animationDrawable?.start()
         super.show()
+        animationDrawable?.start()
     }
 
     override fun dismiss() {
-        animationDrawable?.stop()
         super.dismiss()
+        animationDrawable?.stop()
     }
 
 }

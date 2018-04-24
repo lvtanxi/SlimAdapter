@@ -45,6 +45,7 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
         initData()
         bindListener()
         onProcessLogic()
+        fromProcess = compositeDisposable != null
     }
 
     override fun getRootLayoutId(): Int {
@@ -101,7 +102,6 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
 
     override fun hideLoadingView() {
         loadingDialog?.dismiss()
-        fromProcess = false
     }
 
     override fun toastSuccess(message: String?) {
@@ -128,6 +128,7 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
 
     override fun showContentView() {
         stateLayout?.showContentView()
+        fromProcess = true
     }
 
     override fun addDisposable(disposable: Disposable) {

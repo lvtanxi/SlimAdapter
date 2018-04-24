@@ -3,12 +3,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:background="@color/blue"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/serialNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+        <Switch
+            android:id="@+id/switch2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Switch"/>
+
         <TextView
             android:id="@+id/model"
             android:layout_width="wrap_content"

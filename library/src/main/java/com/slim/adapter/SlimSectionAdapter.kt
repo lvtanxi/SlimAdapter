@@ -5,7 +5,7 @@ import android.util.SparseIntArray
 /**
  * Date: 2018-04-18
  * Time: 13:26
- * Description:
+ * Description: 分组
  */
 class SlimSectionAdapter: SlimAdapter() {
     //存储Sectioned对应的Position
@@ -63,6 +63,8 @@ class SlimSectionAdapter: SlimAdapter() {
     }
 
     override fun getItem(position: Int): Any {
+        if (position==-1)
+            println(">>>>>>>>>>>")
         val section = getSectionIndex(position)
         if (isSectioned(position)) {
             return list[section]
