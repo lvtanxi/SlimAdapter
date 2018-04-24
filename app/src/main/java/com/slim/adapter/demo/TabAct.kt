@@ -12,6 +12,7 @@ import com.slim.adapter.demo.base.BaseTabLayoutActivity
 @Act(title = "tab")
 class TabAct :BaseTabLayoutActivity(){
     override fun getViewPager()=SlimPagerAdapter(supportFragmentManager)
-            .add(Frag(),"普通")
-            .add(ListFrag(),"列表")
+            .add(Frag(),"模拟提交请求")
+            .add(FragNet(),"普通进入请求")
+            .add(ListFrag(),"列表请求")
 }

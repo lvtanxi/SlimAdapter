@@ -23,7 +23,7 @@ class Frag : BaseFragment(){
                 params = {
                     "name"("吕檀溪")
                 }
-            }.mapPageSub<Void>(this)
+            }.mapSub<Void>(this)
         }
     }
 

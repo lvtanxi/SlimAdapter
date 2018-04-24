@@ -47,6 +47,7 @@ abstract class BaseRecyclerActivity : BaseActivity(), PageWidgetInterface {
 
     override fun onProcessLogic() {
         super.onProcessLogic()
+        fromProcess=true
         refreshAndLoadMoreDelegate?.startRefresh(refreshLayout)
     }
 

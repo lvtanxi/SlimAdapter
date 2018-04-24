@@ -53,7 +53,8 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
         if (change && needProcess && hasCreateView) {
             needProcess = false
             onProcessLogic()
-            fromProcess = compositeDisposable != null
+            if (!fromProcess)
+                fromProcess = compositeDisposable != null
         }
     }
 
@@ -95,7 +96,6 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
 
     override fun initContentData() {
         stateLayout?.setViewSwitchAnimProvider(FadeViewAnimProvider())
-        stateLayout?.showContentView()
     }
 
     override fun initData() {
@@ -107,7 +107,7 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
         stateLayout?.setEmptyAction(stateLayoutDelegate)
     }
     override fun onProcessLogic() {
-        fromProcess = true
+
     }
 
     override fun showLoadingView() {
@@ -141,6 +141,7 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
 
     override fun showContentView() {
         stateLayout?.showContentView()
+        fromProcess=true
     }
 
     override fun addDisposable(disposable: Disposable) {

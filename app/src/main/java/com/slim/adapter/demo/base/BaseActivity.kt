@@ -45,7 +45,8 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
         initData()
         bindListener()
         onProcessLogic()
-        fromProcess = compositeDisposable != null
+        if (!fromProcess)
+            fromProcess = compositeDisposable != null
     }
 
     override fun getRootLayoutId(): Int {
@@ -71,7 +72,6 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
     override fun initContentData() {
         toolbarView?.let { setSupportActionBar(toolbarView) }
         stateLayout?.setViewSwitchAnimProvider(FadeViewAnimProvider())
-        stateLayout?.showContentView()
         act?.let {
             setTitleStr(act!!.title)
             menuResId = act!!.menuResId
@@ -91,7 +91,6 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
     }
 
     override fun onProcessLogic() {
-        fromProcess = true
     }
 
     override fun showLoadingView() {

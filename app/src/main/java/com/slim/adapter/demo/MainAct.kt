@@ -21,6 +21,7 @@ class MainAct : BaseActivity() {
         hideToolbar()
     }
 
+
     override fun bindListener() {
         super.bindListener()
         toList.setOnClickListener {

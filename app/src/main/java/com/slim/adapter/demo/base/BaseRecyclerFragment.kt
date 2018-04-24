@@ -43,7 +43,7 @@ abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
     abstract fun bindAdapter(): SlimAdapter
 
     override fun onProcessLogic() {
-        super.onProcessLogic()
+        fromProcess = true
         refreshAndLoadMoreDelegate?.startRefresh(refreshLayout)
     }
 
