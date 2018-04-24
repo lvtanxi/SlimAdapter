@@ -1,7 +1,6 @@
 package com.slim.adapter.demo
 
 
-import android.media.Image
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.slim.adapter.SlimAdapter
@@ -12,7 +11,6 @@ import com.slim.adapter.demo.base.BaseRecyclerActivity
 import com.slim.adapter.demo.data.User
 import com.slim.http.core.slimHttp
 import com.slim.http.type.GET
-import kotlinx.android.synthetic.main.item_user.view.*
 
 @Act(title = "普通List")
 class ListActivity : BaseRecyclerActivity() {
