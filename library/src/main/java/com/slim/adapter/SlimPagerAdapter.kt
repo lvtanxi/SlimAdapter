@@ -21,6 +21,11 @@ class SlimPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
         titleItems.add(title)
     }
 
+    fun add(fragments: List<Fragment>, titles: List<CharSequence>) = apply {
+        pagerItems.addAll(fragments)
+        titleItems.addAll(titles)
+    }
+
 
     fun remove(position: Int) {
         pagerItems.removeAt(position)
