@@ -63,8 +63,6 @@ class SlimSectionAdapter: SlimAdapter() {
     }
 
     override fun getItem(position: Int): Any {
-        if (position==-1)
-            println(">>>>>>>>>>>")
         val section = getSectionIndex(position)
         if (isSectioned(position)) {
             return list[section]
