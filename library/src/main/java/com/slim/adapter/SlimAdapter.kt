@@ -1,5 +1,7 @@
 package com.slim.adapter
 
+import android.support.v7.recyclerview.extensions.ListAdapter
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +10,7 @@ import android.view.ViewGroup
  * 适配
  */
 @Suppress("UNCHECKED_CAST")
-open class SlimAdapter : RecyclerView.Adapter<SlimHolder>() {
+open class SlimAdapter : ListAdapter<Any, SlimHolder>(DiffCallback()) {
     protected val list = ArrayList<Any>()
     private var recyclerView: RecyclerView? = null
     private lateinit var inflater: LayoutInflater
@@ -89,7 +91,7 @@ open class SlimAdapter : RecyclerView.Adapter<SlimHolder>() {
         }
     }
 
-    open fun getItem(position: Int) = list[position]
+    override fun getItem(position: Int) = list[position]
 
     override fun getItemCount() = list.size
 
@@ -178,6 +180,12 @@ open class SlimAdapter : RecyclerView.Adapter<SlimHolder>() {
         if (onClick != null) {
             slimHolder.itemView.setOnClickListener { onClick(slimHolder, getItemModel(slimHolder.layoutPosition)) }
         }
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any) = oldItem === newItem
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any) = oldItem == newItem
     }
 
 }

@@ -40,7 +40,7 @@ dependencies {
     implementation 'com.orhanobut:logger:2.1.1'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation  'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.github.lvtanxi:SlimStateLayout:1.0.4.2'
+    implementation  'com.github.bumptech.glide:glide:3.7.0'
     implementation project(':library')
 }

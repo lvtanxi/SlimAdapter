@@ -20,9 +20,9 @@ class ListActivity : BaseRecyclerActivity() {
                     .onBind { holder, t ->
                         SlimConvert(holder.itemView)
                                 .setText(R.id.serialNumber,t.name)
-                                .with<ImageView>(R.id.image,{
+                                .with<ImageView>(R.id.image) {
                                     Glide.with(it.context).load(t.image).into(it)
-                                })
+                                }
                     }
                     .onClick { _, t ->
                         toastSuccess(t.name)
