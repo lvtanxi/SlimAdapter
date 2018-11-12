@@ -17,14 +17,14 @@ class ListActivity : BaseRecyclerActivity() {
 
     override fun bindAdapter() = SlimAdapter()
             .map(Type<User>(R.layout.item_user)
-                    .onBind { holder, t ->
-                        SlimConvert(holder.itemView)
-                                .setText(R.id.serialNumber,t.name)
+                    .onBind { itemView, t, _ ->
+                        SlimConvert(itemView)
+                                .setText(R.id.serialNumber, t.name)
                                 .with<ImageView>(R.id.image) {
                                     Glide.with(it.context).load(t.image).into(it)
                                 }
                     }
-                    .onClick { _, t ->
+                    .onClick { _, t, _ ->
                         toastSuccess(t.name)
                     }
             )

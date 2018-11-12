@@ -84,9 +84,6 @@ class SectionDecoration(@LayoutRes private val  sectionLayoutId: Int) : Recycler
         if (headerPosition >= 0 && mHeaderPosition != headerPosition) {
             mHeaderPosition = headerPosition
             val pinnedViewHolder = mAdapter!!.createViewHolder(parent, sectionLayoutId)
-            if (mHeaderPosition==-1||mHeaderPosition==12){
-                println(">>>>>>>")
-            }
             mAdapter?.bindViewHolder(pinnedViewHolder,mHeaderPosition)
             mPinnedHeaderView = pinnedViewHolder.itemView
 

@@ -28,10 +28,10 @@ class SectionActivity : BaseRecyclerActivity() {
 
     override fun bindAdapter() = SlimSectionAdapter()
             .map(Type<Sd>(R.layout.item_section)
-                    .onBind { holder, t ->
-                        holder.itemView.title.text = t.title
+                    .onBind { itemView, t ,_->
+                        itemView.title.text = t.title
                     }
-                    .onClick { _, t ->
+                    .onClick { _, t,_ ->
                         toastSuccess(t.title)
                     }
             )
@@ -40,7 +40,7 @@ class SectionActivity : BaseRecyclerActivity() {
                         convert.setText(R.id.serialNumber, t.name)
                                 .with(R.id.image, ImageConvert(t.image))
                     }
-                    .onClick { _, t ->
+                    .onClick { _, t,_ ->
                         toastSuccess(t.name)
                     }
             )

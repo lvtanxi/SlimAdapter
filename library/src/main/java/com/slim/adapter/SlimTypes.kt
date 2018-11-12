@@ -1,5 +1,7 @@
 package com.slim.adapter
 
+import android.view.View
+
 
 /**
  * 多布局适配
@@ -22,8 +24,8 @@ open class Type<T> (layout: Int) : AbsType<T>(layout) {
     fun onRecycle(action: Action<T>?) = apply { onRecycle = action }
 }
 
-typealias Action<T> = (holder:SlimHolder,t:T) -> Unit
+typealias Action<T> = (itemView:View,item:T,postion:Int) -> Unit
 
-typealias Convert<T> = (convert:SlimConvert,t:T) -> Unit
+typealias Convert<T> = (convert:SlimConvert,item:T) -> Unit
 
 

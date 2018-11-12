@@ -15,6 +15,7 @@ fun View?.setVisibility(show: Boolean) {
     this?.visibility = if (show) View.VISIBLE else View.GONE
 }
 
+@Suppress("UNCHECKED_CAST")
 fun <T : View> Context.inflate(@LayoutRes layoutId: Int): T {
     return LayoutInflater.from(this).inflate(layoutId, null) as T
 }

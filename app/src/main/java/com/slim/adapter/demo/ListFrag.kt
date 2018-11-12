@@ -1,7 +1,6 @@
 package com.slim.adapter.demo
 
 import com.slim.adapter.SlimAdapter
-import com.slim.adapter.Type
 import com.slim.adapter.demo.base.BaseRecyclerFragment
 import com.slim.adapter.demo.data.User
 import com.slim.http.core.slimHttp
@@ -13,16 +12,16 @@ import kotlinx.android.synthetic.main.item_user.view.*
  * Time: 15:54
  * Description:
  */
-class ListFrag :BaseRecyclerFragment(){
+class ListFrag : BaseRecyclerFragment() {
     override fun bindAdapter() = SlimAdapter()
-            .map(Type<User>(R.layout.item_user)
-                    .onBind { holder, t ->
-                        holder.itemView.serialNumber.text = t.name
-                    }
-                    .onClick { _, t ->
-                        toastSuccess(t.name)
-                    }
-            )
+            .map<User>(R.layout.item_user) {
+                onBind { itemView, t,_ ->
+                    itemView.serialNumber.text = t.name
+                }
+                onClick { _, t ,_->
+                    toastSuccess(t.name)
+                }
+            }
 
 
     override fun loadData() {

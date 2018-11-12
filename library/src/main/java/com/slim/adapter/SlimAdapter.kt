@@ -29,6 +29,7 @@ open class SlimAdapter : ListAdapter<Any, SlimHolder>(DiffCallback()) {
 
     inline fun <reified T : Any> map(type: AbsType<T>) = map(T::class.java, type)
 
+
     inline fun <reified T : Any> map(layout: Int, noinline f: (Type<T>.() -> Unit)? = null) = map(T::class.java, Type<T>(layout).apply { f?.invoke(this) })
 
     fun handler(handler: Handler) = apply {
@@ -123,7 +124,7 @@ open class SlimAdapter : ListAdapter<Any, SlimHolder>(DiffCallback()) {
 
 
     private fun <T> invokeAction(action: Action<T>?, slimHolder: SlimHolder) {
-        action?.invoke(slimHolder, getItemModel(slimHolder.layoutPosition))
+        action?.invoke(slimHolder.itemView, getItemModel(slimHolder.layoutPosition),slimHolder.layoutPosition)
     }
 
     private fun <T> notifyBind(slimHolder: SlimHolder, type: AbsType<T>) {
@@ -178,7 +179,7 @@ open class SlimAdapter : ListAdapter<Any, SlimHolder>(DiffCallback()) {
     private fun <T> setClickListeners(slimHolder: SlimHolder, type: Type<T>) {
         val onClick = type.onClick
         if (onClick != null) {
-            slimHolder.itemView.setOnClickListener { onClick(slimHolder, getItemModel(slimHolder.layoutPosition)) }
+            slimHolder.itemView.setOnClickListener { onClick(slimHolder.itemView, getItemModel(slimHolder.layoutPosition),slimHolder.layoutPosition) }
         }
     }
 
