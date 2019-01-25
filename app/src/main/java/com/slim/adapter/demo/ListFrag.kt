@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_user.view.*
  * Description:
  */
 class ListFrag : BaseRecyclerFragment() {
-    override fun bindAdapter() = SlimAdapter()
+    override fun obtainAdapter() = SlimAdapter()
             .map<User>(R.layout.item_user) {
                 onBind { itemView, t,_ ->
                     itemView.serialNumber.text = t.name

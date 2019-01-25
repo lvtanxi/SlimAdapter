@@ -26,7 +26,7 @@ class SectionActivity : BaseRecyclerActivity() {
     }
 
 
-    override fun bindAdapter() = SlimSectionAdapter()
+    override fun obtainAdapter() = SlimSectionAdapter()
             .map(Type<Sd>(R.layout.item_section)
                     .onBind { itemView, t ,_->
                         itemView.title.text = t.title

@@ -19,16 +19,11 @@ import com.slim.http.delegate.WidgetInterface
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-/**
- * Date: 2018-04-13
- * Time: 18:07
- * Description:
- */
 abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
     private var compositeDisposable: CompositeDisposable? = null
-    protected var statusView: View? = null
+    private var statusView: View? = null
     protected var stateLayout: StateLayout? = null
-    private var act: Act? = null
+    protected var act: Act? = null
     private var menuResId: Int = 0
     protected var fromProcess = false
     private var toolbarView: Toolbar? = null
@@ -38,7 +33,6 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         act = javaClass.getAnnotation(Act::class.java)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(getRootLayoutId())
         initContentView()
         initContentData()
@@ -47,6 +41,10 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
         onProcessLogic()
         if (!fromProcess)
             fromProcess = compositeDisposable != null
+    }
+
+    override fun getRequestedOrientation(): Int {
+        return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
 
     override fun getRootLayoutId(): Int {

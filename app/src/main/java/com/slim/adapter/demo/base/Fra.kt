@@ -1,11 +1,6 @@
 package com.slim.adapter.demo.base
 
 
-/**
- * Date: 2018-02-12
- * Time: 09:55
- * Description: 注解Frage
- */
 @Target(AnnotationTarget.CLASS)
 annotation class Fra(
 

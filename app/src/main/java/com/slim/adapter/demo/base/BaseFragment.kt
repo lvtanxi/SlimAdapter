@@ -1,5 +1,4 @@
 package com.slim.adapter.demo.base
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -25,7 +24,7 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
     private var needProcess = true
     protected var stateLayout: StateLayout? = null
     private var loadingDialog: LoadingDialog? = null
-    private var fra: Fra? = null
+    protected var fra: Fra? = null
     protected var fromProcess=false
     private var compositeDisposable: CompositeDisposable? = null
 

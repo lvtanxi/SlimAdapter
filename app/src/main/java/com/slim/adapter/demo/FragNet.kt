@@ -2,10 +2,8 @@ package com.slim.adapter.demo
 
 import com.slim.adapter.demo.base.BaseFragment
 import com.slim.adapter.demo.base.Fra
-import com.slim.adapter.demo.data.User
 import com.slim.http.core.slimHttp
 import com.slim.http.type.GET
-import kotlinx.android.synthetic.main.item_car.*
 
 /**
  * Date: 2018-04-23

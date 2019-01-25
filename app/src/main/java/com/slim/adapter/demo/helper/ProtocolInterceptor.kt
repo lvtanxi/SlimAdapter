@@ -30,9 +30,9 @@ class ProtocolInterceptor : Interceptor {
     private fun parseDataFromBody(body: String?): String {
         try {
             val json = JSONObject(body)
-            val code = json.optInt("status", 0)
+            val code = json.optInt("code", 0)
             if (code == 200)
-                return json.optString("content")
+                return json.optString("data")
             throw IOException(json.optString("msg"))
         } catch (e: Exception) {
             throw  IOException("数据解析错误,请稍后重试!")

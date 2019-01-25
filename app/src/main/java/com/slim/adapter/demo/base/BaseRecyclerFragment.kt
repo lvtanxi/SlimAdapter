@@ -4,21 +4,25 @@ import android.support.v7.widget.RecyclerView
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.slim.adapter.SlimAdapter
 import com.slim.adapter.demo.R
-import com.slim.adapter.demo.helper.OnRefreshAndLoadMoreDelegate
 import com.slim.http.delegate.PageWidgetInterface
+import com.yuxuan.common.helper.OnRefreshAndLoadMoreDelegate
+import com.yuxuan.common.helper.PageDelegate
 
 
 abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
     protected var refreshLayout: SmartRefreshLayout? = null
-    private var recyclerView: RecyclerView? = null
-    private var slimAdapter: SlimAdapter? = null
+    protected var recyclerView: RecyclerView? = null
     private var isRefresh: Boolean = false
-    protected var pageNo = 1
-    protected var pageSize = 20
-    private var lastDataSize = -1
-    protected var refreshAndLoadMoreDelegate: OnRefreshAndLoadMoreDelegate? = null
+    protected var slimAdapter: SlimAdapter? = null
+    private var pageDelegate = PageDelegate()
+    private var refreshAndLoadMoreDelegate: OnRefreshAndLoadMoreDelegate? = null
 
-    override fun getContentLayoutId(): Int = R.layout.widget_refresh_layout
+    override fun getContentLayoutId(): Int {
+        if (fra == null || fra!!.contentLayout == 0) {
+            return R.layout.widget_refresh_layout
+        }
+        return fra!!.contentLayout
+    }
 
 
     override fun initContentView() {
@@ -29,18 +33,20 @@ abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
 
     override fun initData() {
         super.initData()
-        slimAdapter = bindAdapter().into(recyclerView)
         refreshLayout?.setEnableLoadMoreWhenContentNotFull(false)
+        slimAdapter = obtainAdapter()
+        recyclerView?.adapter = slimAdapter
         refreshAndLoadMoreDelegate = OnRefreshAndLoadMoreDelegate {
             if (it)
-                pageNo = 1
+                pageDelegate.resetPageNo()
             isRefresh = it
             loadData()
         }
     }
 
+    //获取
+    abstract fun obtainAdapter(): SlimAdapter
 
-    abstract fun bindAdapter(): SlimAdapter
 
     override fun onProcessLogic() {
         fromProcess = true
@@ -50,23 +56,10 @@ abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
     override fun stopRefresh(isSuccess: Boolean) {
         fromProcess = false
         refreshLayout ?: return
-        val enableLoadMore = refreshLayout?.isEnableLoadMore ?: false
-        if (enableLoadMore) {
-            val loadEnd = isSuccess && (lastDataSize < pageSize)
-            if (!loadEnd)
-                pageNo += 1
-            if (isRefresh) {
-                refreshLayout?.finishRefresh(0, isSuccess)
-                if (loadEnd)
-                    refreshLayout?.setNoMoreData(true)
-            } else if (loadEnd) {
-                refreshLayout?.finishLoadMoreWithNoMoreData()
-            } else {
-                refreshLayout?.finishLoadMore(isSuccess)
-            }
-        } else {
-            refreshLayout?.finishRefresh(isSuccess)
+        refreshAndLoadMoreDelegate?.finishRefresh(refreshLayout, isSuccess, isRefresh) {
+            pageDelegate.checkLoadEnd(isSuccess)
         }
+        showEmptyView(isSuccess)
     }
 
     override fun bindListener() {
@@ -99,21 +92,20 @@ abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
 
     override fun addItems(items: Any?) {
         if (items != null && items is MutableList<*>) {
-            lastDataSize = items.size
+            pageDelegate.lastDataSize = items.size
             slimAdapter?.addItems(items as MutableList<Any>, isRefresh)
             return
         }
-        lastDataSize = 0
+        pageDelegate.lastDataSize = 0
     }
+
 
     override fun clearLoadMoreListener() {
         refreshLayout?.isEnableLoadMore = false
         refreshLayout?.setOnLoadMoreListener(null)
     }
 
-    override fun getPageMap(): Map<String, String> {
-        return mapOf("pageNo" to pageNo.toString(), "pageSize" to pageSize.toString())
-    }
+    override fun getPageMap() = pageDelegate.getPagingParam()
 
     private fun adapterIsEmpty(): Boolean {
         return slimAdapter == null || slimAdapter!!.isEmpty()

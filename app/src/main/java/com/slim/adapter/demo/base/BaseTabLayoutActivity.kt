@@ -1,21 +1,15 @@
 package com.slim.adapter.demo.base
 
-import android.support.v4.view.ViewPager
 import android.support.design.widget.TabLayout
-import com.slim.adapter.demo.R
 import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
+import com.slim.adapter.demo.R
 
-
-/**
- * Date: 2018-04-23
- * Time: 15:26
- * Description:
- */
 abstract class BaseTabLayoutActivity : BaseActivity() {
-    protected var tabLayout: TabLayout? = null
-    protected var tabViewPager: ViewPager? = null
+    private var tabLayout: TabLayout? = null
+    private var tabViewPager: ViewPager? = null
 
-    override fun getContentLayoutId()=R.layout.widget_tab_layout
+    override fun getContentLayoutId()= R.layout.widget_tab_layout
 
     override fun initContentView() {
         super.initContentView()

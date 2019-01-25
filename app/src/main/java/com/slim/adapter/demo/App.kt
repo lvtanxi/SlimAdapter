@@ -21,7 +21,7 @@ class App :Application() {
             connectTimeout = 10
             readTimeout = 10
             writeTimeout = 10
-            baseUrl = "http://10.12.194.93:8080/"
+            baseUrl = "http://10.12.194.69:8080/"
             interceptors(ProtocolInterceptor())
             retryOnConnectionFailure = true
         }

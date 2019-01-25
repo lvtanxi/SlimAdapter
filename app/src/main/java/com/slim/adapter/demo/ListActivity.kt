@@ -15,7 +15,7 @@ import com.slim.http.type.GET
 @Act(title = "普通List")
 class ListActivity : BaseRecyclerActivity() {
 
-    override fun bindAdapter() = SlimAdapter()
+    override fun obtainAdapter() = SlimAdapter()
             .map(Type<User>(R.layout.item_user)
                     .onBind { itemView, t, _ ->
                         SlimConvert(itemView)

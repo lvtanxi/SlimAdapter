@@ -1,11 +1,6 @@
 package com.slim.adapter.demo.base
 
 
-/**
- * Date: 2018-02-12
- * Time: 09:55
- * Description: 注解act 的name
- */
 @Target(AnnotationTarget.CLASS)
 annotation class Act (
         /**

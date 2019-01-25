@@ -1,10 +1,8 @@
-package com.slim.adapter.demo.helper
+package com.yuxuan.common.helper
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshLayout
 import com.scwang.smartrefresh.layout.constant.RefreshState
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener
-import com.scwang.smartrefresh.layout.listener.OnRefreshListener
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener
 import com.scwang.smartrefresh.layout.listener.SimpleMultiPurposeListener
 
@@ -20,11 +18,11 @@ class OnRefreshAndLoadMoreDelegate(private val loadListener: (isRefresh: Boolean
         loadListener.invoke(false)
     }
 
-    fun startRefresh(refreshLayout: SmartRefreshLayout?){
-        if (refreshLayout!=null){
-            if (refreshLayout.state==RefreshState.None){
+    fun startRefresh(refreshLayout: SmartRefreshLayout?) {
+        if (refreshLayout != null) {
+            if (refreshLayout.state == RefreshState.None) {
                 refreshLayout.autoRefresh(0)
-            }else{
+            } else {
                 refreshLayout.setReboundDuration(0)
                 refreshLayout.finishRefresh(0)
                 refreshLayout.setOnMultiPurposeListener(object : SimpleMultiPurposeListener() {
@@ -38,7 +36,25 @@ class OnRefreshAndLoadMoreDelegate(private val loadListener: (isRefresh: Boolean
                 })
             }
         }
+    }
 
+    fun finishRefresh(refreshLayout: RefreshLayout?, isSuccess: Boolean, isRefresh: Boolean, block: () -> Boolean) {
+        refreshLayout ?: return
+        val enableLoadMore = refreshLayout.isEnableLoadMore
+        if (enableLoadMore) {
+            val loadEnd = block()
+            if (isRefresh) {
+                refreshLayout.finishRefresh(0, isSuccess)
+                if (loadEnd)
+                    refreshLayout.setNoMoreData(true)
+            } else if (loadEnd) {
+                refreshLayout.finishLoadMoreWithNoMoreData()
+            } else {
+                refreshLayout.finishLoadMore(isSuccess)
+            }
+        } else {
+            refreshLayout.finishRefresh(isSuccess)
+        }
     }
 
 }
