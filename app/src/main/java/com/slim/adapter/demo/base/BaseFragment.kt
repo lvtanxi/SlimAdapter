@@ -1,9 +1,9 @@
 package com.slim.adapter.demo.base
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.lvtanxi.layout.FadeViewAnimProvider
 import com.lvtanxi.layout.StateLayout
 import com.slim.adapter.demo.R
@@ -11,9 +11,7 @@ import com.slim.adapter.demo.helper.LoadingDialog
 import com.slim.adapter.demo.helper.StateLayoutDelegate
 import com.slim.adapter.demo.helper.ToastUtils
 import com.slim.adapter.demo.util.X
-import com.slim.http.delegate.WidgetInterface
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import com.slim.http.intes.WidgetInterface
 
 
 abstract class BaseFragment : Fragment(), WidgetInterface {
@@ -26,7 +24,6 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
     private var loadingDialog: LoadingDialog? = null
     protected var fra: Fra? = null
     protected var fromProcess=false
-    private var compositeDisposable: CompositeDisposable? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fra = javaClass.getAnnotation(Fra::class.java)
@@ -52,14 +49,12 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
         if (change && needProcess && hasCreateView) {
             needProcess = false
             onProcessLogic()
-            if (!fromProcess)
-                fromProcess = compositeDisposable != null
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initContentData()
+        initRootData()
         initData()
         bindListener()
         if (hasCreateView && (isFragmentVisible || userVisibleHint)) {
@@ -72,7 +67,7 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
         rootView = inflater?.inflate(getRootLayoutId(), null)
         stateLayout = rootView?.findViewById(R.id.state_layout)
         contentView = inflater?.inflate(getContentLayoutId(), null)
-        initContentView()
+        initRootView()
     }
 
 
@@ -88,12 +83,12 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
         throw IllegalArgumentException("ContentLayout not exist")
     }
 
-    override fun initContentView() {
+    override fun initRootView() {
         stateLayout?.addView(contentView)
     }
 
 
-    override fun initContentData() {
+    override fun initRootData() {
         stateLayout?.setViewSwitchAnimProvider(FadeViewAnimProvider())
     }
 
@@ -120,18 +115,18 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
         fromProcess = false
     }
 
-    override fun toastSuccess(message: String?) {
+    override fun toastSuccess(message: CharSequence?) {
         ToastUtils.getInstance(activity!!).toastSuccess(message)
     }
 
-    override fun toastFail(message: String?) {
+    override fun toastFail(message: CharSequence?) {
         ToastUtils.getInstance(activity!!).toastError(message)
     }
 
-    override fun showErrorView(message: String?) {
+    override fun showErrorView(message: CharSequence?) {
         if (fromProcess)
             if (X.isNetworkConnected(activity!!))
-                stateLayout?.showErrorView(message)
+                stateLayout?.showErrorView(message?.toString())
             else
                 stateLayout?.showNetWorkError()
         else
@@ -143,22 +138,10 @@ abstract class BaseFragment : Fragment(), WidgetInterface {
         fromProcess=true
     }
 
-    override fun addDisposable(disposable: Disposable) {
-        if (compositeDisposable == null)
-            compositeDisposable = CompositeDisposable()
-        compositeDisposable?.add(disposable)
-    }
-
 
     override fun onDestroyView() {
         needProcess = true
         hasCreateView = false
         super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        compositeDisposable?.dispose()
-        compositeDisposable = null
-        super.onDestroy()
     }
 }

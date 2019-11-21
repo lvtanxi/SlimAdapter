@@ -1,7 +1,7 @@
 package com.slim.adapter.demo.helper
 
 import android.view.View
-import com.slim.http.delegate.WidgetInterface
+import com.slim.http.intes.WidgetInterface
 import java.lang.ref.WeakReference
 
 /**

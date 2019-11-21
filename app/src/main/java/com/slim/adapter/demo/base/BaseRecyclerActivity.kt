@@ -1,13 +1,13 @@
 package com.slim.adapter.demo.base
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.slim.adapter.SlimAdapter
 import com.slim.adapter.demo.R
-import com.slim.http.delegate.PageWidgetInterface
-import com.yuxuan.common.helper.OnRefreshAndLoadMoreDelegate
-import com.yuxuan.common.helper.PageDelegate
-
+import com.slim.adapter.demo.helper.OnRefreshAndLoadMoreDelegate
+import com.slim.adapter.demo.helper.PageDelegate
+import com.slim.http.intes.PageWidgetInterface
+@Suppress("UNCHECKED_CAST")
 abstract class BaseRecyclerActivity : BaseActivity(), PageWidgetInterface {
     protected var refreshLayout: SmartRefreshLayout? = null
     protected var recyclerView: RecyclerView? = null
@@ -23,8 +23,8 @@ abstract class BaseRecyclerActivity : BaseActivity(), PageWidgetInterface {
         return act!!.contentLayout
     }
 
-    override fun initContentView() {
-        super.initContentView()
+    override fun initRootView() {
+        super.initRootView()
         refreshLayout = this.findViewById(R.id.smart_refresh_layout)
         recyclerView = this.findViewById(R.id.refresh_recycler_view)
     }
@@ -45,6 +45,8 @@ abstract class BaseRecyclerActivity : BaseActivity(), PageWidgetInterface {
 
     //获取
     abstract fun obtainAdapter(): SlimAdapter
+
+
 
     override fun onProcessLogic() {
         super.onProcessLogic()
@@ -74,14 +76,14 @@ abstract class BaseRecyclerActivity : BaseActivity(), PageWidgetInterface {
             stateLayout?.showContentView()
     }
 
-    override fun showErrorView(message: String?) {
+    override fun showErrorView(message: CharSequence?) {
         if (adapterIsEmpty())
             super.showErrorView(message)
         else
             super.toastFail(message)
     }
 
-    override fun toastFail(message: String?) {
+    override fun toastFail(message: CharSequence?) {
         if (adapterIsEmpty())
             showErrorView(message)
         else
@@ -99,7 +101,6 @@ abstract class BaseRecyclerActivity : BaseActivity(), PageWidgetInterface {
 
 
     override fun clearLoadMoreListener() {
-        refreshLayout?.isEnableLoadMore = false
         refreshLayout?.setOnLoadMoreListener(null)
     }
 

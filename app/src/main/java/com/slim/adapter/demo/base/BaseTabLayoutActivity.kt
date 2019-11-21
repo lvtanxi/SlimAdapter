@@ -1,8 +1,8 @@
 package com.slim.adapter.demo.base
 
-import android.support.design.widget.TabLayout
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.slim.adapter.demo.R
 
 abstract class BaseTabLayoutActivity : BaseActivity() {
@@ -11,8 +11,8 @@ abstract class BaseTabLayoutActivity : BaseActivity() {
 
     override fun getContentLayoutId()= R.layout.widget_tab_layout
 
-    override fun initContentView() {
-        super.initContentView()
+    override fun initRootView() {
+        super.initRootView()
         tabLayout = findViewById(R.id.tab_layout)
         tabViewPager = findViewById(R.id.tab_view_pager)
     }

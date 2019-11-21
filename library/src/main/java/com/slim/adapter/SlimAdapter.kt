@@ -1,10 +1,11 @@
 package com.slim.adapter
 
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 /**
  * 适配
@@ -58,7 +59,7 @@ open class SlimAdapter : ListAdapter<Any, SlimHolder>(DiffCallback()) {
     }
 
     override fun onBindViewHolder(slimHolder: SlimHolder, position: Int) {
-        val type = getType(position)!!
+        val type = getType(position)
         if (type is AbsType<*>) {
             slimHolder.data = getItem(position)
             if (!slimHolder.created) {

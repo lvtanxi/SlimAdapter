@@ -7,9 +7,6 @@ import com.slim.adapter.demo.base.BaseRecyclerActivity
 import com.slim.adapter.demo.data.Sd
 import com.slim.adapter.demo.data.User
 import com.slim.adapter.demo.helper.ImageConvert
-import com.slim.adapter.demo.helper.SectionDecoration
-import com.slim.http.core.slimHttp
-import com.slim.http.type.GET
 import kotlinx.android.synthetic.main.item_section.view.*
 
 /**
@@ -22,7 +19,6 @@ class SectionActivity : BaseRecyclerActivity() {
 
     override fun initData() {
         super.initData()
-        recyclerView?.addItemDecoration(SectionDecoration(R.layout.item_section))
     }
 
 
@@ -46,9 +42,5 @@ class SectionActivity : BaseRecyclerActivity() {
             )
 
     override fun loadData() {
-        slimHttp {
-            httpType = GET("section")
-            otherParam = getPageMap()
-        }.mapPageSub<MutableList<Sd>>(this)
     }
 }

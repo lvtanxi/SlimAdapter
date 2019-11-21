@@ -2,12 +2,12 @@ package com.slim.adapter.demo.base
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.lvtanxi.layout.FadeViewAnimProvider
 import com.lvtanxi.layout.StateLayout
 import com.slim.adapter.demo.R
@@ -15,12 +15,9 @@ import com.slim.adapter.demo.helper.LoadingDialog
 import com.slim.adapter.demo.helper.StateLayoutDelegate
 import com.slim.adapter.demo.helper.ToastUtils
 import com.slim.adapter.demo.util.X
-import com.slim.http.delegate.WidgetInterface
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import com.slim.http.intes.WidgetInterface
 
 abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
-    private var compositeDisposable: CompositeDisposable? = null
     private var statusView: View? = null
     protected var stateLayout: StateLayout? = null
     protected var act: Act? = null
@@ -34,13 +31,11 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
         super.onCreate(savedInstanceState)
         act = javaClass.getAnnotation(Act::class.java)
         setContentView(getRootLayoutId())
-        initContentView()
-        initContentData()
+        initRootView()
+        initRootData()
         initData()
         bindListener()
         onProcessLogic()
-        if (!fromProcess)
-            fromProcess = compositeDisposable != null
     }
 
     override fun getRequestedOrientation(): Int {
@@ -59,7 +54,7 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
         throw IllegalArgumentException("ContentLayout not exist")
     }
 
-    override fun initContentView() {
+    override fun initRootView() {
         toolbarView = findViewById(R.id.toolbar)
         titleView = findViewById(R.id.toolbar_title)
         stateLayout = findViewById(R.id.state_layout)
@@ -67,7 +62,7 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
         stateLayout?.addView(statusView)
     }
 
-    override fun initContentData() {
+    override fun initRootData() {
         toolbarView?.let { setSupportActionBar(toolbarView) }
         stateLayout?.setViewSwitchAnimProvider(FadeViewAnimProvider())
         act?.let {
@@ -101,18 +96,18 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
         loadingDialog?.dismiss()
     }
 
-    override fun toastSuccess(message: String?) {
+    override fun toastSuccess(message: CharSequence?) {
         ToastUtils.getInstance(this).toastSuccess(message)
     }
 
-    override fun toastFail(message: String?) {
+    override fun toastFail(message: CharSequence?) {
         ToastUtils.getInstance(this).toastError(message)
     }
 
-    override fun showErrorView(message: String?) {
+    override fun showErrorView(message: CharSequence?) {
         if (fromProcess)
             if (X.isNetworkConnected(this))
-                stateLayout?.showErrorView(message)
+                stateLayout?.showErrorView(message?.toString())
             else
                 stateLayout?.showNetWorkError()
         else
@@ -128,17 +123,6 @@ abstract class BaseActivity : AppCompatActivity(), WidgetInterface {
         fromProcess = true
     }
 
-    override fun addDisposable(disposable: Disposable) {
-        if (compositeDisposable == null)
-            compositeDisposable = CompositeDisposable()
-        compositeDisposable?.add(disposable)
-    }
-
-    override fun onDestroy() {
-        compositeDisposable?.dispose()
-        compositeDisposable = null
-        super.onDestroy()
-    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == android.R.id.home) {

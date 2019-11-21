@@ -1,4 +1,4 @@
-package com.yuxuan.common.helper
+package com.slim.adapter.demo.helper
 
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.api.RefreshLayout

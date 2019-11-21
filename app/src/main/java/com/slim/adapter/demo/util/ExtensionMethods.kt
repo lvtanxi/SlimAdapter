@@ -1,12 +1,12 @@
 package com.slim.adapter.demo.util
 
 import android.content.Context
-import android.support.annotation.ColorRes
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.ColorRes
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 
 
 fun Context.dp2px(dpVal: Float) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, resources.displayMetrics)

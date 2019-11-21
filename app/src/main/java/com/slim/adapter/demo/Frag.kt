@@ -2,9 +2,6 @@ package com.slim.adapter.demo
 
 import com.slim.adapter.demo.base.BaseFragment
 import com.slim.adapter.demo.base.Fra
-import com.slim.http.core.slimHttp
-import com.slim.http.type.GET
-import kotlinx.android.synthetic.main.item_car.*
 
 /**
  * Date: 2018-04-23
@@ -16,14 +13,6 @@ class Frag : BaseFragment(){
 
     override fun bindListener() {
         super.bindListener()
-        switch2.setOnCheckedChangeListener { _, _ ->
-            slimHttp {
-                httpType = GET("list")
-                params = {
-                    "name"("吕檀溪")
-                }
-            }.mapSub<Void>(this)
-        }
     }
 
 }

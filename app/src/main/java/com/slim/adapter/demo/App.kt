@@ -4,9 +4,6 @@ import android.app.Application
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
-import com.slim.adapter.demo.helper.ProtocolInterceptor
-import com.slim.http.core.slimClient
-import java.util.concurrent.TimeUnit
 
 /**
  * Date: 2018-04-13
@@ -16,15 +13,6 @@ import java.util.concurrent.TimeUnit
 class App :Application() {
     override fun onCreate() {
         super.onCreate()
-        slimClient {
-            timeUnit = TimeUnit.SECONDS
-            connectTimeout = 10
-            readTimeout = 10
-            writeTimeout = 10
-            baseUrl = "http://10.12.194.69:8080/"
-            interceptors(ProtocolInterceptor())
-            retryOnConnectionFailure = true
-        }
     }
 
     companion object {

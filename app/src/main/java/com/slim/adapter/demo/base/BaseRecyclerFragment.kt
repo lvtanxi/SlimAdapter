@@ -1,12 +1,12 @@
 package com.slim.adapter.demo.base
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.slim.adapter.SlimAdapter
 import com.slim.adapter.demo.R
-import com.slim.http.delegate.PageWidgetInterface
-import com.yuxuan.common.helper.OnRefreshAndLoadMoreDelegate
-import com.yuxuan.common.helper.PageDelegate
+import com.slim.http.intes.PageWidgetInterface
+import com.slim.adapter.demo.helper.OnRefreshAndLoadMoreDelegate
+import com.slim.adapter.demo.helper.PageDelegate
 
 
 abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
@@ -17,6 +17,7 @@ abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
     private var pageDelegate = PageDelegate()
     private var refreshAndLoadMoreDelegate: OnRefreshAndLoadMoreDelegate? = null
 
+
     override fun getContentLayoutId(): Int {
         if (fra == null || fra!!.contentLayout == 0) {
             return R.layout.widget_refresh_layout
@@ -25,8 +26,8 @@ abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
     }
 
 
-    override fun initContentView() {
-        super.initContentView()
+    override fun initRootView() {
+        super.initRootView()
         refreshLayout = contentView?.findViewById(R.id.smart_refresh_layout)
         recyclerView = contentView?.findViewById(R.id.refresh_recycler_view)
     }
@@ -47,6 +48,8 @@ abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
     //获取
     abstract fun obtainAdapter(): SlimAdapter
 
+    open fun renderAdapter(render: SlimAdapter.() -> Unit) {
+    }
 
     override fun onProcessLogic() {
         fromProcess = true
@@ -76,14 +79,14 @@ abstract class BaseRecyclerFragment : BaseFragment(), PageWidgetInterface {
             stateLayout?.showContentView()
     }
 
-    override fun showErrorView(message: String?) {
+    override fun showErrorView(message: CharSequence?) {
         if (adapterIsEmpty())
             super.showErrorView(message)
         else
             super.toastFail(message)
     }
 
-    override fun toastFail(message: String?) {
+    override fun toastFail(message: CharSequence?) {
         if (adapterIsEmpty())
             showErrorView(message)
         else
